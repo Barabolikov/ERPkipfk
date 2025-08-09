@@ -1,0 +1,17 @@
+body {
+
+}
+.logo {
+    width: 300px;
+}
+@media (max-width: 768px) { /* адаптовано для екранів до 768px */
+    #delete, #view, #edit {
+        font-size: 0; /* ховає текст */
+        min-width: 50px;
+    }
+
+    #delete::before, #view::before, #edit::before {
+        font-size: 16px; /* розмір іконки */
+        margin-right: 0; /* прибирає відступ між текстом та іконкою */
+    }
+}

@@ -1,0 +1,209 @@
+web.php
+згрупуємо посилання
+Route::controller(PageController::class)->group(function () {
+    Route::get('/','Index' );
+    Route::get('/about', 'About' );
+    Route::get('/contact', 'Contact' );
+});
+---------------
+додаме нейми {{ route('about.page')}}
+
+Route::controller(PageController::class)->group(function () {
+    Route::get('/','Index' )->name('home.page');
+    Route::get('/about', 'About' )->name('about.page');
+    Route::get('/contact', 'Contact' )->name('contact.page');
+});
+-------------------
+
+> php artisan make:middleware CheckAge  
+
+kernel.php добавляем строчку вних
+ protected $middlewareAliases = [
+ таку
+  'check' => \App\Http\Middleware\CheckAge::class,
+  ---------------
+  В CheckAge.php дописуємо
+  public function handle(Request $request, Closure $next): Response
+    {
+        if ($request->check <= 20 ) {
+            return redirect('contact');
+        }
+
+        return $next($request);
+    }
+
+    в роуте добавляем
+    Route::get('/about', 'About' )->name('about')->middleware('check');
+
+пробуем
+
+ре
+струємось дивимось 
+встановлюємо по мануалу
+
+https://laravel.com/docs/10.x/starter-kits#laravel-breeze
+перевіряємо
+http://kipt.local/login
+
+можна налаштувалти пробно пошту
+https://mailtrap.io/inboxes/3168666/messages
+пробуємо перевіряємо
+
+підтвердження  пошти
+в моделс юзер розкоментуємо 
+ та додаємо 
+ class User extends Authenticatable implements MustVerifyEmail
+
+Проуємо реєструвати 2 користувача
+Для першого корисувача повторюємо вхід і пітвержуємо пошту також
+-----------------
+кількість спроб входу замість 5 ставимо 2 у App\Http\Requests\Auth\LoginRequest.php;
+**
+public function ensureIsNotRateLimited(): void
+    {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 2)) {
+            return;
+
+**
+пробуємо
+------------------
+в шаблонах міняємо в папці компонен тс 1 файл лого
+
+--------------------------
+вхід по логіну
+в міграцію CreateUser  після пошти додаємо ('username')->unigue();
+PhpMyAdmin after Passvod add username varchar 255 Null ind-UNIQUE indname- username
+register.blade.php додаємо username після user
+RegistUserControler copy email edit username
+Model User fillable add username
+
+шаблоні логін справляємо email edit username
+
+Request Auth LoginRequest rule email edit username і прибираємо перевірку емаіл 
+і тут же нижче в функ аутентифікації міняємо email edit username
+перевіряємо
+
+-------------------------------------
+шаблон
+1
+public add folder backend and copy assets
+
+в папці шаблонів створюємо folder admin and створюємо admin_masre.blade
+копіюємо index.html з шаблону в нього
+{{ asset('backend/') }}
+правимо щоб був 
+стар
+ <link rel="shortcut icon" href="assets/images/favicon.ico">
+ нов
+ <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+ заготовка
+ {{ asset('backend/') }}
+виділяєм з алт та вставляємо заготовку
+ в папці шаблонів admin створюємо index.blade і туди переносимо наш розділ контент
+ ------
+ 2
+робимо паку боді і в неї хедер, футер і сайдебар і змастера переносимо і підключаєемо
+include('admin.body.header')
+include('admin.body.footer')
+include('admin.body.sidebar')
+------------------------------------------------
+Модифікуємо footer
+- на власний розсуд 
+------------------------------------------------
+Модифікуємо header 
+- видалити мега меню 
+-  видалити перемикач мови
+-  видалити notification
+- до рис {{ asset('backend/') }}
+- -  видалити налаштування
+------------------------------------------------
+Модифікуємо sidebar  
+- убрать лого зверху сайдебару 
+- прибрати pabes, component 
+------------------------------------------------
+Модифікуємо index
+- залишимо верхній та нижній рядок
+і в  нижньому табличку
+------------------------------------------
+Робимо вихід
+в шаблоні хедера href="{{ route('admin.logout') }}">
+
+Створюємо 
+php artisan make:controller AdminController
+web.php
+додаємо 
+use App\Http\Controllers\AdminController;
+копіюємо  за Auth...Ses...Contr..
+
+public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
+
+    в створений контроллер
+    змінюємо 
+    return redirect('/login');
+--------------------------------------------
+модифікуєм вхід берем з шаблону
+наш вхід шаблон копіюємо в окр док
+той що взяли  на місто нашого 
+правимо шляхи css js
+мінямо у формі
+ <form class="form-horizontal mt-3" method="POST" action="{{ route('register') }}">
+                            @csrf
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <input class="form-control" id="name" name="name" type="text" required="" placeholder="Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <input class="form-control" id="username" name="username" type="text" required="" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <input class="form-control" id="email" name="email" type="email" required="" placeholder="Email">
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <input class="form-control" type="password" id="password" name="password" required="" placeholder="Пароль">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <input class="form-control" type="password" id="password_confirmation" name="password_confirmation" required="" placeholder="Повторити пароль">
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 row">
+                            <div class="col-12">
+                                <div class="custom-control custom-checkbox">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center row mt-3 pt-1">
+                            <div class="col-12">
+                                <button class="btn btn-info w-100 waves-effect waves-light" type="submit">Зареєструватись</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-2 mb-0 row">
+                            <div class="col-12 mt-3 text-center">
+                                <a href="pages-login.html" class="text-muted">Вже є аккаунт?</a>
+                            </div>
+                        </div>
+                    </form>
+
+перевіряємо 
+----------------------------------------
+модифікуємо логін за тим же принципом
